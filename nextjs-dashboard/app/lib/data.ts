@@ -89,7 +89,8 @@ export async function fetchFilteredInvoices(
   currentPage: number,
 ) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
+  // console.log(offset," = Offset");
+  // offset will skip that many rows before returning the result
   try {
     const invoices = await sql<InvoicesTable>`
       SELECT
@@ -111,7 +112,26 @@ export async function fetchFilteredInvoices(
       ORDER BY invoices.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
-
+    // const sqlScript = `SELECT
+    // invoices.id,
+    // invoices.amount,
+    // invoices.date,
+    // invoices.status,
+    // customers.name,
+    // customers.email,
+    // customers.image_url
+    // FROM invoices
+    // JOIN customers ON invoices.customer_id = customers.id
+    // WHERE
+    // customers.name ILIKE ${`%${query}%`} OR
+    // customers.email ILIKE ${`%${query}%`} OR
+    // invoices.amount::text ILIKE ${`%${query}%`} OR
+    // invoices.date::text ILIKE ${`%${query}%`} OR
+    // invoices.status ILIKE ${`%${query}%`}
+    // ORDER BY invoices.date DESC
+    // LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    // `;
+    // console.log("Inside data.ts: ",invoices," + sqlScript: ",sqlScript);
     return invoices.rows;
   } catch (error) {
     console.error('Database Error:', error);

@@ -16,7 +16,12 @@ export default function Search({ placeholder }: { placeholder: string }) {
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", "1");
-    term ? params.set("query", term) : params.delete("query");
+    if (term) {
+      params.set("query", term);
+    }
+    else {
+      params.delete("query");
+    }
     replace(`${pathName}?${params.toString()}`);
     // replace(${pathname}?${params.toString()}) updates the URL with the user's search data. For example, /dashboard/invoices?query=lee if the user searches for "Lee".
 

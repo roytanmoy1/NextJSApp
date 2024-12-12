@@ -71,7 +71,7 @@ importers:
         specifier: npm:types-react-dom@19.0.0-rc.1
         version: types-react-dom@19.0.0-rc.1
       eslint:
-        specifier: ^9
+        specifier: ^9.16.0
         version: 9.16.0(jiti@1.21.0)
       eslint-config-next:
         specifier: 15.0.4

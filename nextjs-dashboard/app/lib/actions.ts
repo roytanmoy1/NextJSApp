@@ -1,7 +1,6 @@
 "use server";
 import { signIn } from "@/auth";
 import { sql } from "@vercel/postgres";
-import { error } from "console";
 import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -97,19 +96,29 @@ export async function deleteInvoice(id: string) {
 
 export async function authenticate(
   prevState: string | undefined,
-  formData: FormData,
+  formData: FormData
 ) {
   try {
-    await signIn('credentials', formData);
+    await signIn("credentials", formData);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials.';
+        case "CredentialsSignin":
+          return "Invalid credentials.";
         default:
-          return 'Something went wrong.';
+          return "Something went wrong.";
       }
     }
     throw error;
+  }
+}
+
+export async function getCustomers() {
+  try {
+    const data =
+      await sql`SELECT c.id,c.name,c.image_url,c.email,COUNT(i.id) as total_invoices,coalesce(SUM(CASE WHEN i.status ='pending' then i.amount else 0 end),0) as total_pending,coalesce(SUM(CASE WHEN i.status ='paid' then i.amount else 0 end),0) as total_paid from customers c left join invoices i on c.id = i.customer_id group by c.id order by total_pending desc;`;
+    return data.rows;
+  } catch (err) {
+    console.log(err);
   }
 }

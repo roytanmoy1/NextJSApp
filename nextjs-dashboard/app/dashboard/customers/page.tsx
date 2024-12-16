@@ -2,6 +2,7 @@ import { getCustomers } from "@/app/lib/actions";
 import { lusitana } from "@/app/ui/fonts";
 import Search from "@/app/ui/search";
 import Image from "next/image";
+import { Suspense } from "react";
 
 export default async function Page() {
   const customers = await getCustomers();
@@ -10,7 +11,9 @@ export default async function Page() {
       <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
         Customers
       </h1>
-      <Search placeholder="Search customers..." />
+      <Suspense fallback={<div>Loading search...</div>}>
+        <Search placeholder="Search customers..." />
+      </Suspense>
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
